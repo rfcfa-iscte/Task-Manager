@@ -73,6 +73,7 @@ export const GlobalProvider = ({ children }) => {
         tasks,
         deleteTask,
         updateTask,
+        allTasks,
         isLoading,
         completedTasks,
         importantTasks,
