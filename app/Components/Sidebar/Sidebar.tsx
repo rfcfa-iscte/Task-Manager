@@ -12,7 +12,6 @@ import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 
 function Sidebar() {
   const { theme } = useGlobalState();
-
   const router = useRouter();
   const pathname = usePathname();
   const { signOut } = useClerk();
