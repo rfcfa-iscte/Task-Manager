@@ -6,12 +6,22 @@ import Image from "next/image";
 import menu from "@/app/utils/menu";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Button from "../Button/Button";
+import { logout } from "@/app/utils/Icons";
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 
 function Sidebar() {
   const { theme } = useGlobalState();
 
   const router = useRouter();
   const pathname = usePathname();
+  const { signOut } = useClerk();
+  const { user } = useUser();
+  const { firstName, lastName, imageUrl } = user || {
+    firstname: "",
+    lastName: "",
+    imageUrl: "",
+  };
 
   const handleClick = (link: string) => {
     router.push(link);
@@ -21,11 +31,14 @@ function Sidebar() {
       <div className="profile">
         <div className="profile-overlay"></div>
         <div className="image">
-          <Image width={70} height={70} src="/avatar1.jpg" alt="profile" />
+          <Image width={70} height={70} src={imageUrl} alt="profile" />
         </div>
-        <h1>
-          <span>Rui</span>
-          <span>Ferreira</span>
+        <div className="user-btn absolute z-20 top-0 w-full h-full">
+          <UserButton />
+        </div>
+        <h1 className="capitalize">
+          {firstName}
+          {lastName}
         </h1>
       </div>
       <ul className="nav-items">
@@ -42,7 +55,20 @@ function Sidebar() {
           );
         })}
       </ul>
-      <button></button>
+      <div className="sign-out relative m-6">
+        <Button
+          name={"Sign Out"}
+          type={"submit"}
+          padding={"0.4rem 0.8rem"}
+          borderRad={"0.8rem"}
+          fw={"500"}
+          fs={"1.2rem"}
+          icon={logout}
+          click={() => {
+            signOut(() => router.push("/signin"));
+          }}
+        />
+      </div>
     </SidebarStyled>
   );
 }
@@ -59,6 +85,24 @@ const SidebarStyled = styled.nav`
   justify-content: space-between;
 
   color: ${(props) => props.theme.colorGrey3};
+
+  .user-btn {
+    .cl-rootBox {
+      width: 100%;
+      height: 100%;
+
+      .cl-userButtonBox {
+        width: 100%;
+        height: 100%;
+
+        .cl-userButtonTrigger {
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+        }
+      }
+    }
+  }
   .profile {
     margin: 1.5rem;
     padding: 1rem 0.8rem;
